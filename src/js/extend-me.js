@@ -1,7 +1,5 @@
 'use strict';
 
-var _ = require('object-iterators');
-
 /** @namespace extend **/
 
 /** @summary Extends an existing constructor into a new constructor.
@@ -52,7 +50,7 @@ function extend(prototypeAdditions) {
     prototype.super = this.prototype;
 
     if (prototypeAdditions) {
-        _(prototypeAdditions).each(function (value, key) {
+        for (var key in prototypeAdditions) {
             switch (key) {
                 case 'initializeOwn':
                     // already called above; not needed in prototype
@@ -61,16 +59,19 @@ function extend(prototypeAdditions) {
                     Constructor.extend = extend;
                     break;
                 case 'aliases':
-                    _(prototypeAdditions.aliases).each(makeAlias);
+                    for (var alias in prototypeAdditions.aliases) {
+                        makeAlias(prototypeAdditions.aliases[alias]);
+                    }
                     break;
                 default:
+                    var value = prototypeAdditions[key];
                     if (typeof value === 'string' && value[0] === '#') {
                         makeAlias(value, key.substr(1));
                     } else {
                         prototype[key] = value;
                     }
             }
-        });
+        }
     }
 
     return Constructor;

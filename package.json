@@ -1,6 +1,6 @@
 {
   "name": "extend-me",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "description": "Yet another Backbone-like class extender",
   "repository": {
@@ -23,8 +23,5 @@
     "jsdoc": "^3.3.3",
     "run-sequence": "^1.1.4",
     "should": "^7.1.1"
-  },
-  "dependencies": {
-    "object-iterators": "^1.0.0"
   }
 }
