@@ -1,6 +1,6 @@
 'use strict';
 
-/** @namespace extend **/
+/** @namespace extend-me **/
 
 /** @summary Extends an existing constructor into a new constructor.
  *
@@ -28,7 +28,7 @@
  *
  * @param {extendedPrototypeAdditionsObject} prototypeAdditions - Object with members to copy to new constructor's prototype. Most members will be copied to the prototype. Some members, however, have special meanings as explained in the {@link extendedPrototypeAdditionsObject|type definition} (and may or may not be copied to the prototype).
  *
- * @memberOf extend
+ * @memberOf extend-me
  */
 function extend(prototypeAdditions) {
     function Constructor() {
@@ -46,6 +46,7 @@ function extend(prototypeAdditions) {
 
     if (prototypeAdditions) {
         for (var key in prototypeAdditions) {
+            var value = prototypeAdditions[key];
             switch (key) {
                 case 'initializeOwn':
                     // already called above; not needed in prototype
@@ -54,12 +55,11 @@ function extend(prototypeAdditions) {
                     Constructor.extend = extend;
                     break;
                 case 'aliases':
-                    for (var alias in prototypeAdditions.aliases) {
-                        makeAlias(prototypeAdditions.aliases[alias]);
+                    for (var alias in value) {
+                        makeAlias(value[alias], alias);
                     }
                     break;
                 default:
-                    var value = prototypeAdditions[key];
                     if (typeof value === 'string' && value[0] === '#') {
                         makeAlias(value, key.substr(1));
                     } else {
@@ -95,6 +95,7 @@ function extend(prototypeAdditions) {
  * 1. Walks back the prototype chain to `Object`'s prototype
  * 2. Walks forward to new object, calling any `initialize` methods it finds along the way with the same context and arguments with which the constructor was called.
  * @private
+ * @memberOf extend-me
  */
 function initializePrototypeChain() {
     var term = this,
