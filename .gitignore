@@ -2,4 +2,5 @@
 .idea
 doc
 node_modules
-index.js
+/index.js
+/build/extend-me.js

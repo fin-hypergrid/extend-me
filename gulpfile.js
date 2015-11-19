@@ -1,18 +1,18 @@
 'use strict';
 
-var gulp = require('gulp'),
-    $$   = require('gulp-load-plugins')();
+var gulp        = require('gulp'),
+    $$          = require('gulp-load-plugins')();
 
 var runSequence = require('run-sequence'),
     browserSync = require('browser-sync').create(),
     exec        = require('child_process').exec,
     path        = require('path');
 
-var srcDir  = './src/',
-    testDir = './test/',
-    jsDir   = srcDir + 'js/',
-    jsFiles = '**/*.js',
-    destDir = './';
+var srcDir   = './src/',
+    testDir  = './test/',
+    jsDir    = srcDir + 'js/',
+    jsFiles  = '**/*.js',
+    destDir  = './';
 
 var js = {
     dir   : jsDir,
@@ -43,7 +43,15 @@ gulp.task('watch', function () {
         });
 });
 
-gulp.task('default', ['watch', 'build'], browserSyncLaunchServer);
+gulp.task('default', ['build', 'watch'], function() {
+    browserSync.init({
+        server: {
+            // Serve up our build folder
+            baseDir: srcDir
+        },
+        port: 5000
+    });
+});
 
 //  //  //  //  //  //  //  //  //  //  //  //
 
@@ -74,18 +82,7 @@ function rootify() {
         .pipe(gulp.dest(destDir));
 }
 
-function browserSyncLaunchServer() {
-    browserSync.init({
-        server: {
-            // Serve up our test html file
-            baseDir: srcDir
-        },
-        port: 5000
-    });
-}
-
 function clearBashScreen() {
     var ESC = '\x1B';
     console.log(ESC + 'c'); // (VT-100 escape sequence)
 }
-
