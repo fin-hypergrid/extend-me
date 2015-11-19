@@ -2,9 +2,11 @@
 
 var _ = require('object-iterators');
 
+/** @namespace extend **/
+
 /** @summary Extends an existing constructor into a new constructor.
  *
- * @returns {function} A new constructor, extended from the given context, possibly iwth some prototype additions.
+ * @returns {function} A new constructor, extended from the given context, possibly with some prototype additions.
  *
  * @desc Extends "objects" (constructors), with optional additional code, optional prototype additions, and optional prototype member aliases.
  *
@@ -32,6 +34,8 @@ var _ = require('object-iterators');
  * * `extendable: true` - Adds this function (`extend()`) as a property `.extend()` of the new extended object constructor, essentially making the object constructor itself easily "extensible" (i.e, able to create new constructors that inherit form this constructor). (Alternatively, even without doing this, you can always extend from any constructor by calling `extend.call(ConstructorToInheritFrom, {...})`.) (Not added to prototype.)
  * * `aliases: {...}` - Hash of aliases for prototype members in form `{ key: 'member', ... }` where `key` is the name of an alieas and `'member'` is the name of an existing member in the prototype. Each such key is added to the prototype as a reference to the named member. (The `aliases` object itself is *not* added to prototype.) Alternatively:
  * * `key: '#xxx'` - Adds an alias `key` with same value as existing member `xxx`. Simpler though subtler.
+ *
+ * @memberOf extend
  */
 function extend(prototypeAdditions) {
     function Constructor() {
