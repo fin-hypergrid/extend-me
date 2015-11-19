@@ -1,0 +1,30 @@
+{
+  "name": "extend-me",
+  "version": "1.0.0",
+  "main": "index.js",
+  "description": "Yet another Backbone-like class extender",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joneit/extend-me"
+  },
+  "scripts": {
+    "test": "gulp test"
+  },
+  "author": "Jonathan Eiten",
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.10.0",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^1.1.0",
+    "gulp-exclude-gitignore": "^1.0.0",
+    "gulp-load-plugins": "^1.1.0",
+    "gulp-mocha": "^2.2.0",
+    "gulp-rename": "^1.2.2",
+    "jsdoc": "^3.3.3",
+    "run-sequence": "^1.1.4",
+    "should": "^7.1.1"
+  },
+  "dependencies": {
+    "object-iterators": "^1.0.0"
+  }
+}
