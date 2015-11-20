@@ -1,10 +1,6 @@
 # extend-me
 Yet another Backbone-like class extender
 
-**Version 2.0 has a breaking changes:**
-1. `this.super` has been removed as it suffered the "grandchild" problem; use `YourBaseClass.prototype` instead.
-2. The `.initializeOwn` method has been renamed to `.postInitialize`.
-
 ## Synopsis
 
 ```javascript
@@ -39,7 +35,8 @@ var parabola = new ParabolaWithIntercept(3, 2, 1),
 The `initialize` methods at each level of inheritance are the constructors.
 Instantiating a derived class will automatically call `initialize` on all ancestor
 classes that implement it, starting with the most distant ancestor all the way to
-and inclucing the derived class in question.
+and including the derived class in question. Each `initialize` method is called
+with the same parameters passed to the constructor.
 
 If you intend to instantiate the base class (`Parabola` in the above) directly
 (_i.e.,_ it is not "abstract"), include the following in the constructor:
