@@ -13,18 +13,24 @@
  * Provide a constructor as the context and any prototype additions you require in the first argument.
  *
  * For example, if you wish to extend `BaseConstructor` to a new constructor with prototype overrides and/or additions, usage is:
+ *
  * ```javascript
  * extend.call(BaseConstructor, prototypeAdditions);`
  * ```
+ *
  * More elegantly, you can mix it in:
+ *
  * ```javascript
  * BaseConstructor.extend = extend
  * ```
+ *
  * and call it like this:
+ *
  * ```javascript
  * var ExtendedConstructor = BaseConstructor.extend(prototypeAdditions);
  * ```
- * To make `ExtendedConstructor` itself extensible, give it too an `extend` property as above, or simply include the special property `extendable: true` (see below) in the prototype additions, which attaches the `extend` property to the constructor for you.
+ *
+ * This function (`extend()`) is added to the new extended object constructor as a property `.extend`, essentially making the object constructor itself easily "extendable." (Note: This is a property of each constructor and not a method of its prototype!)
  *
  * @param {extendedPrototypeAdditionsObject} prototypeAdditions - Object with members to copy to new constructor's prototype. Most members will be copied to the prototype. Some members, however, have special meanings as explained in the {@link extendedPrototypeAdditionsObject|type definition} (and may or may not be copied to the prototype).
  *
@@ -32,39 +38,49 @@
  */
 function extend(prototypeAdditions) {
     function Constructor() {
+        if (prototypeAdditions && prototypeAdditions.preInitialize) {
+            prototypeAdditions.preInitialize.apply(this, arguments);
+        }
+
         initializePrototypeChain.apply(this, arguments);
 
-        if (prototypeAdditions.initializeOwn) {
-            prototypeAdditions.initializeOwn.apply(this, arguments);
+        if (prototypeAdditions && prototypeAdditions.postInitialize) {
+            prototypeAdditions.postInitialize.apply(this, arguments);
         }
     }
+
+    Constructor.extend = extend;
 
     var prototype = Constructor.prototype = Object.create(this.prototype);
     prototype.constructor = Constructor;
 
-    prototype.super = this.prototype;
-
     if (prototypeAdditions) {
         for (var key in prototypeAdditions) {
-            var value = prototypeAdditions[key];
-            switch (key) {
-                case 'initializeOwn':
-                    // already called above; not needed in prototype
-                    break;
-                case 'extendable':
-                    Constructor.extend = extend;
-                    break;
-                case 'aliases':
-                    for (var alias in value) {
-                        makeAlias(value[alias], alias);
-                    }
-                    break;
-                default:
-                    if (typeof value === 'string' && value[0] === '#') {
-                        makeAlias(value, key.substr(1));
-                    } else {
-                        prototype[key] = value;
-                    }
+            if (prototypeAdditions.hasOwnProperty(key)) {
+                var value = prototypeAdditions[key];
+                switch (key) {
+                    case 'initializeOwn':
+                        // already called above; not needed in prototype
+                        break;
+                    case 'aliases':
+                        for (var alias in value) {
+                            if (value.hasOwnProperty(alias)) {
+                                makeAlias(value[alias], alias);
+                            }
+                        }
+                        break;
+                    case '$$CLASS_NAME':
+                        if (extend.copyClassNames) {
+                            prototype[key] = value;
+                        }
+                        break;
+                    default:
+                        if (typeof value === 'string' && value[0] === '#') {
+                            makeAlias(value, key.substr(1));
+                        } else {
+                            prototype[key] = value;
+                        }
+                }
             }
         }
     }
@@ -75,6 +91,10 @@ function extend(prototypeAdditions) {
         prototype[key] = prototypeAdditions[value];
     }
 }
+extend.copyClassNames = true;
+
+extend.Base = function () {};
+extend.Base.extend = extend;
 
 /** @typedef {function} extendedConstructor
  * @property prototype.super - A reference to the prototype this constructor was extended from.
@@ -84,10 +104,10 @@ function extend(prototypeAdditions) {
 /** @typedef {object} extendedPrototypeAdditionsObject
  * @property {function} [initialize] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after similar function in all ancestors called with same signature.
  * @property {function} [initializeOwn] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after (all) the `initialize` function(s).
- * @property {boolean} [extendable] - Truthy value adds this function (`extend()`) as a property `.extend()` of the new extended object constructor, essentially making the object constructor itself easily "extensible" (i.e, able to create new constructors that inherit form this constructor). (Alternatively, even without doing this, you can always extend from any constructor by calling `extend.call(ConstructorToInheritFrom, {...})`.) (Not added to prototype.)
  * @property {object} [aliases] - Hash of aliases for prototype members in form `{ key: 'member', ... }` where `key` is the name of an alieas and `'member'` is the name of an existing member in the prototype. Each such key is added to the prototype as a reference to the named member. (The `aliases` object itself is *not* added to prototype.) Alternatively:
  * @property {string} [keys] - Arbitrary property names defined here with string values starting with a `#` character will alias the actual properties named in the strings (following the `#`). This is an alternative to providing an `aliases` hash, perhaps simpler (though subtler). (Use arbitrary identifiers here; don't use the name `keys`!)
  * @property {*} [arbitraryProperties] - Any additional arbitrary properties defined here will be added to the new constructor's prototype. (Use arbitrary identifiers here; don't use the name `aribitraryProperties`!)
+ * @property {string} [$$CLASS_NAME] - This is simply copied to the prototype. Useful for debugging purposes because all derived constructors appear to have the same name ("Constructor") in the debugger. This property is ignored when `extend.classnames` is set to `false`.
  */
 
 /** @summary Call all `initialize` methods found in prototype chain.

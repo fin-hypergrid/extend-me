@@ -3,8 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <title>Test harness for extend()</title>
+
+    <script>var module = { exports: {} };</script>
+    <script src="js/extend-me.js"></script>
+    <script>var extend = module.exports, Base = extend.Base;</script>
+
+    <script>
+        window.onload= function() {
+
+            var Parabola = Base.extend({
+                initialize: function (a, b) {
+                    this.a = a;
+                    this.b = b;
+                },
+                calculate: function(x) {
+                    return this.a * Math.pow(x, 2) + (this.b * x);
+                }
+            });
+
+            var ParabolaWithIntercept = Parabola.extend({
+                initialize: function(a, b, c) {
+                    this.c = c;
+                },
+                calculate: function(x) {
+                    var y = Parabola.prototype.calculate.apply(this, arguments);
+                    return y + this.c;
+                }
+            });
+
+            var parabola = new ParabolaWithIntercept(3, 2, 1);
+            var list = document.getElementsByTagName('ol')[0];
+
+            for (var x = -3; x <= 3; x += 0.5) {
+                var item = document.createElement('li');
+                item.innerHTML = 'f(' + x + ') = ' + parabola.calculate(x);
+                list.appendChild(item);
+            }
+
+        }
+    </script>
 </head>
 <body>
-    <em>(To be written.)</em>
+<dl>
+    <dt>
+        f(x) = ax<sup>2</sup> + bx + c
+    </dt>
+    <dd>where a = 3</dd>
+    <dd>where b = 2</dd>
+    <dd>where c = 1</dd>
+</dl>
+
+    <ol></ol>
 </body>
 </html>
