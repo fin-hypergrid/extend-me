@@ -1,6 +1,10 @@
 # extend-me
 Yet another Backbone-like class extender
 
+**Version 2.0 has a breaking changes:**
+1. `this.super` has been removed as it suffered the "grandchild" problem; use `YourBaseClass.prototype` instead.
+2. The `.initializeOwn` method has been renamed to `.postInitialize`.
+
 ## Synopsis
 
 ```javascript
