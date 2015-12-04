@@ -67,11 +67,11 @@ function enclose() {
     return gulp.src(srcDir + 'index.js')
         .pipe($$.replace(
             '\'use strict\';',
-            '\'use strict\';\n\n(function(){'
+            '\'use strict\';\n\nwindow.Base = (function(){'
         ))
         .pipe($$.replace(
             'module.exports = extend;',
-            'window.Base = extend.Base;\n\n})();'
+            'return extend;\n\n})().Base;'
         ))
 
         .pipe($$.rename(name + '.js'))

@@ -12,7 +12,7 @@ var Base = require('extend-me').Base;
 Browser:
 
 ```html
-<script src="http://openfin.github.io/extend-me/extend-me.min.js"></script>
+<script src="http://joneit.github.io/extend-me/extend-me.min.js"></script>
 ```
 
 Usage:
@@ -80,18 +80,18 @@ calls, you an define methods `preInitialize` and `postInitialize`.
 
 ### API documentation
 
-Detailed API docs can be found [here](http://openfin.github.io/extend-me/extend-me.html).
+Detailed API docs can be found [here](http://joneit.github.io/extend-me/extend-me.html).
 
 ### Demo
 
-A demo can be found [here](http://openfin.github.io/extend-me/demo.html).
+A demo can be found [here](http://joneit.github.io/extend-me/demo.html).
 
 ### CDN versions
 
 To use in a browser, you have two options:
 
 1. Incorporate the node module into your own browserified project.
-2. Use the browserified versions [`extend-me.js`](http://openfin.github.io/extend-me/extend-me.js) or [`extend-me.min.js`](http://openfin.github.io/extend-me/extend-me.min.js) available on the Github pages CDN.
+2. Use the browserified versions [`extend-me.js`](http://joneit.github.io/extend-me/extend-me.js) or [`extend-me.min.js`](http://joneit.github.io/extend-me/extend-me.min.js) available on the Github pages CDN.
 
 ### Submodules
 
