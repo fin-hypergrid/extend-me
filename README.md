@@ -3,9 +3,37 @@ Yet another Backbone-like class extender
 
 ## Synopsis
 
+Node.js:
+
 ```javascript
 var Base = require('extend-me').Base;
+```
 
+Browser:
+
+```html
+<script src="http://openfin.github.io/extend-me/extend-me.min.js"></script>
+```
+
+Usage:
+
+```javascript
+var MyClass = Base.extend({
+    initialize: function () { ... },
+    member1: ...,
+    member2: ...
+};
+
+var MyChildClass = MyClass.extend({
+    initialize: function () { /* called after base class's initialize() */ },
+    member1: ..., // overrides base class's definition of member1
+    member3: ...
+};
+```
+
+## Example
+
+```javascript
 var Parabola = Base.extend({
     initialize: function (a, b) {
         this.a = a;
@@ -50,11 +78,22 @@ function Parabola() {
 To add initialization code to be executed before or after this chain of `initialize`
 calls, you an define methods `preInitialize` and `postInitialize`.
 
-## API documentation
+### API documentation
 
 Detailed API docs can be found [here](http://openfin.github.io/extend-me/extend-me.html).
 
-## Regarding the git submodule `jsdoc-template`
+### Demo
+
+A demo can be found [here](http://openfin.github.io/extend-me/demo.html).
+
+### CDN versions
+
+To use in a browser, you have two options:
+
+1. Incorporate the node module into your own browserified project.
+2. Use the browserified versions [`extend-me.js`](http://openfin.github.io/extend-me/extend-me.js) or [`extend-me.min.js`](http://openfin.github.io/extend-me/extend-me.min.js) available on the Github pages CDN.
+
+### Submodules
 
 See the note [Regarding submodules](https://github.com/openfin/rectangular#regarding-submodules)
 for important information on cloning this repo or re-purposing its build template.

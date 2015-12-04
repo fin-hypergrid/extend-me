@@ -4,7 +4,7 @@
 
 require('should'); // extends Object with `should`
 
-var cssInjector = require('../src/js/extend-me');
+var cssInjector = require('../src/');
 
 describe('`extend` that', function() {
     it('is a function', function() {

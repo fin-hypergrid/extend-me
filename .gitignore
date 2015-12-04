@@ -1,6 +1,6 @@
 .DS_Store
-.idea
-doc
-node_modules
-/index.js
 /build/extend-me.js
+/build/extend-me.min.js
+/.idea
+/doc
+/node_modules

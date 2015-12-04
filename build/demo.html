@@ -5,7 +5,7 @@
     <title>Test harness for extend()</title>
 
     <script>var module = { exports: {} };</script>
-    <script src="js/extend-me.js"></script>
+    <script src="extend-me.js"></script>
     <script>var extend = module.exports, Base = extend.Base;</script>
 
     <script>
@@ -36,7 +36,7 @@
 
             for (var x = -3; x <= 3; x += 0.5) {
                 var item = document.createElement('li');
-                item.innerHTML = 'f(' + x + ') = ' + parabola.calculate(x);
+                item.innerHTML = '<i>f</i>(' + x + ') = ' + parabola.calculate(x);
                 list.appendChild(item);
             }
 
@@ -46,11 +46,11 @@
 <body>
 <dl>
     <dt>
-        f(x) = ax<sup>2</sup> + bx + c
+        <i>f</i>(<i>x</i>) = <i>ax</i><sup>2</sup> + <i>bx</i> + <i>c</i>
     </dt>
-    <dd>where a = 3</dd>
-    <dd>where b = 2</dd>
-    <dd>where c = 1</dd>
+    <dd>where <i>a</i> = 3</dd>
+    <dd>where <i>b</i> = 2</dd>
+    <dd>where <i>c</i> = 1</dd>
 </dl>
 
     <ol></ol>

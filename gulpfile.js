@@ -8,23 +8,18 @@ var runSequence = require('run-sequence'),
     exec        = require('child_process').exec,
     path        = require('path');
 
-var srcDir   = './src/',
+var name     = 'extend-me',
+    srcDir   = './src/',
     testDir  = './test/',
-    jsDir    = srcDir + 'js/',
-    jsFiles  = '**/*.js',
-    destDir  = './';
-
-var js = {
-    dir   : jsDir,
-    files : jsDir + jsFiles
-};
+    buildDir  = './build/';
 
 //  //  //  //  //  //  //  //  //  //  //  //
 
 gulp.task('lint', lint);
 gulp.task('test', test);
 gulp.task('doc', doc);
-gulp.task('rootify', rootify);
+gulp.task('enclose', enclose);
+gulp.task('serve', browserSyncLaunchServer);
 
 gulp.task('build', function(callback) {
     clearBashScreen();
@@ -32,7 +27,7 @@ gulp.task('build', function(callback) {
         'lint',
         'test',
         'doc',
-        'rootify',
+        'enclose',
         callback);
 });
 
@@ -43,20 +38,12 @@ gulp.task('watch', function () {
         });
 });
 
-gulp.task('default', ['build', 'watch'], function() {
-    browserSync.init({
-        server: {
-            // Serve up our build folder
-            baseDir: srcDir
-        },
-        port: 5000
-    });
-});
+gulp.task('default', ['build', 'watch'], browserSyncLaunchServer);
 
 //  //  //  //  //  //  //  //  //  //  //  //
 
 function lint() {
-    return gulp.src(js.files)
+    return gulp.src(srcDir + 'index.js')
         .pipe($$.excludeGitignore())
         .pipe($$.eslint())
         .pipe($$.eslint.format())
@@ -76,10 +63,34 @@ function doc(cb) {
     });
 }
 
-function rootify() {
-    return gulp.src(js.dir + 'extend-me.js')
-        .pipe($$.rename('index.js'))
-        .pipe(gulp.dest(destDir));
+function enclose() {
+    return gulp.src(srcDir + 'index.js')
+        .pipe($$.replace(
+            '\'use strict\';',
+            '\'use strict\';\n\n(function(){'
+        ))
+        .pipe($$.replace(
+            'module.exports = extend;',
+            'window.Base = extend.Base;\n\n})();'
+        ))
+
+        .pipe($$.rename(name + '.js'))
+        .pipe(gulp.dest(buildDir))
+
+        .pipe($$.uglify())
+        .pipe($$.rename(name + '.min.js'))
+        .pipe(gulp.dest(buildDir))
+}
+
+function browserSyncLaunchServer() {
+    browserSync.init({
+        server: {
+            // Serve up our build folder
+            baseDir: buildDir,
+            index: "demo.html"
+        },
+        port: 5001
+    });
 }
 
 function clearBashScreen() {
