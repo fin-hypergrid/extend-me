@@ -138,7 +138,7 @@ function initializePrototypeChain() {
         var proto = Object.getPrototypeOf(obj);
         if (proto.constructor !== Object) {
             recur(proto);
-            if (proto.initialize) {
+            if (proto.hasOwnProperty('initialize')) {
                 proto.initialize.apply(term, args);
             }
         }

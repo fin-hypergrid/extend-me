@@ -31,11 +31,13 @@ gulp.task('build', function(callback) {
         callback);
 });
 
+gulp.task('reload', function() {
+    browserSync.reload();
+});
+
 gulp.task('watch', function () {
-    gulp.watch([srcDir + '**', testDir + '**'], ['build'])
-        .on('change', function(event) {
-            browserSync.reload();
-        });
+    gulp.watch([srcDir + '**', testDir + '**'], ['build']);
+    gulp.watch([buildDir + name + '.js'], ['reload']);
 });
 
 gulp.task('default', ['build', 'watch'], browserSyncLaunchServer);
