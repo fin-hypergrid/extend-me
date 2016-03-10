@@ -24,7 +24,7 @@
                     this.c = c;
                 },
                 calculate: function(x) {
-                    var y = Parabola.prototype.calculate.apply(this, arguments);
+                    var y = this.super.calculate.apply(this, arguments);
                     return y + this.c;
                 }
             });

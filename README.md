@@ -3,15 +3,18 @@ Yet another Backbone-like class extender
 
 ## Synopsis
 
-Node.js:
+Node.js / Browserify:
 
 ```javascript
 var Base = require('extend-me').Base;
 ```
 
-Browser:
+Browsers:
+ 
+_The client can download directly from the GitHub CDN with one or the other of the following `<script>` tags:
 
 ```html
+<script src="http://joneit.github.io/extend-me/extend-me.js"></script>
 <script src="http://joneit.github.io/extend-me/extend-me.min.js"></script>
 ```
 
@@ -25,10 +28,14 @@ var MyClass = Base.extend({
 };
 
 var MyChildClass = MyClass.extend({
-    initialize: function () { /* called after base class's initialize() */ },
+    preInitialize: function () { ... },  // called before base class's initialize() */
+    initialize: function () { ... },     // called after base class's initialize() and before derived class's initialize() */
+    postInitialize: function () { ... }, // called after this class's initialize() */
     member1: ..., // overrides base class's definition of member1
     member3: ...
 };
+
+var a = new MyClass(), b = new MyChildClass();
 ```
 
 ## Example
@@ -49,34 +56,43 @@ var ParabolaWithIntercept = Parabola.extend({
         this.c = c;
     },
     calculate: function(x) {
-        var y = Parabola.prototype.calculate.apply(this, arguments);
+        var y = this.super.calculate.apply(this, arguments);
         return y + this.c;
     }
 });
 
 var parabola = new ParabolaWithIntercept(3, 2, 1),
-    y = ParabolaWithIntercept(-3); // yields 22
+    y = parabola.calculate(-3); // yields 22
 ```
 
 ### Constructors
 
-The `initialize` methods at each level of inheritance are the constructors.
+You may optionally supply an `initialize` method to be called as your constructor.
+It will be called on object instantiation with the same parameters as passed to the actual constructor.
+ 
+## Initialization Chain
+
+There may be `initialize` methods at each level of inheritance.
 Instantiating a derived class will automatically call `initialize` on all ancestor
-classes that implement it, starting with the most distant ancestor all the way to
+classes that implement it, starting with the most distant ancestor all the way up to
 and including the derived class in question. Each `initialize` method is called
-with the same parameters passed to the constructor.
+with the same parameters as passed to the constructor.
 
-If you intend to instantiate the base class (`Parabola` in the above) directly
-(_i.e.,_ it is not "abstract"), include the following in the constructor:
+In the example above, on instantiation (`var paraboloa = new ParabolaWithIntercept(3, 2, 1)`),
+`Parabola.prototype.initialize` is called first; then `ParabolaWithIntercept.prototype.initialize`.
 
-```javascript
-function Parabola() {
-    this.initialize.apply(this, arguments);
-}
-```
+To add initialization code to be executed _before_ and/or _after_ this chain of `initialize`
+calls, you an define methods `preInitialize` and/or `postInitialize`, respectively. These are _not_
+part of the initialization chain. They are only called on the object being instantiated;
+they are not called when a derived class is being instantiated.
+For example, in the sample usage above, if `MyClass` had had a `preInitialize` method,
+it would be called on `a`'s intantiation but not `b`'s.
 
-To add initialization code to be executed before or after this chain of `initialize`
-calls, you an define methods `preInitialize` and `postInitialize`.
+## Super
+
+You can reference the immediate ancestor in the prototype chain with the `super`
+(a getter on `Base`'s prototype), as shown in the example above.
+
 
 ### API documentation
 
@@ -85,13 +101,6 @@ Detailed API docs can be found [here](http://joneit.github.io/extend-me/extend-m
 ### Demo
 
 A demo can be found [here](http://joneit.github.io/extend-me/demo.html).
-
-### CDN versions
-
-To use in a browser, you have two options:
-
-1. Incorporate the node module into your own browserified project.
-2. Use the browserified versions [`extend-me.js`](http://joneit.github.io/extend-me/extend-me.js) or [`extend-me.min.js`](http://joneit.github.io/extend-me/extend-me.min.js) available on the Github pages CDN.
 
 ### Submodules
 

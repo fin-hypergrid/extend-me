@@ -106,8 +106,15 @@ function extend(extendedClassName, prototypeAdditions) {
     }
 }
 
-extend.Base = function () {};
-extend.Base.extend = extend;
+function Base() {}
+Base.prototype = {
+    constructor: Base.prototype.constructor,
+    get super() {
+        return Object.getPrototypeOf(Object.getPrototypeOf(this));
+    }
+};
+Base.extend = extend;
+extend.Base = Base;
 
 /** @typedef {function} extendedConstructor
  * @property prototype.super - A reference to the prototype this constructor was extended from.
