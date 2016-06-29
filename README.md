@@ -7,6 +7,7 @@ Node.js / Browserify:
 
 ```javascript
 var Base = require('extend-me').Base;
+var newClass = Base.extend(extendedClassName, prototype);
 ```
 
 Browsers:
@@ -17,6 +18,16 @@ _The client can download directly from the GitHub CDN with one or the other of t
 <script src="http://joneit.github.io/extend-me/extend-me.js"></script>
 <script src="http://joneit.github.io/extend-me/extend-me.min.js"></script>
 ```
+
+Syntax:
+
+```javascript
+var newClass = Base.extend(extendedClassName, prototypeAdditions);
+```
+
+* `Base` could also be any descendant class (previously extended in this way).
+* `extendedClassName` _Optional._ This value if provided is copied to the prototype as `$$CLASS_NAME` and is useful in debugging to identify the derived class, the name of which is otherwise (unfortunately) not displayed by the debugger. Could also be useful in your code (something not easily available in standard JavaScript).
+* `prototypeAdditions` _Required._ The members (properties and methods) of this object are added to the new constructor's prototype. Getter/setter literal syntax is not supported but you can use `defineProperty`'s {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty|descriptor objects}. These are recognized with duck-typing. See API doc for details.
 
 Usage:
 

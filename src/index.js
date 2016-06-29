@@ -39,15 +39,20 @@ function extend(extendedClassName, prototypeAdditions) {
             prototypeAdditions = {};
             break;
         case 1:
-            prototypeAdditions = extendedClassName;
-            if (typeof prototypeAdditions !== 'object') {
-                throw 'Single parameter overload must be object.';
+            switch (typeof extendedClassName) {
+                case 'object':
+                    prototypeAdditions = extendedClassName;
+                    extendedClassName = undefined;
+                    break;
+                case 'string':
+                    prototypeAdditions = {};
+                default:
+                    throw 'Single-parameter overload must be either string or object.';
             }
-            extendedClassName = undefined;
             break;
         case 2:
             if (typeof extendedClassName !== 'string' || typeof prototypeAdditions !== 'object') {
-                throw 'Two parameter overload must be string, object.';
+                throw 'Two-parameter overload must be string, object.';
             }
             break;
         default:
@@ -92,6 +97,8 @@ function extend(extendedClassName, prototypeAdditions) {
                 default:
                     if (typeof value === 'string' && value[0] === '#') {
                         makeAlias(value, key.substr(1));
+                    } else if (isDescriptor(value)) {
+                        Object.defineProperty(prototype, key, value);
                     } else {
                         prototype[key] = value;
                     }
@@ -104,6 +111,21 @@ function extend(extendedClassName, prototypeAdditions) {
     function makeAlias(value, key) { // eslint-disable-line no-shadow
         prototype[key] = prototypeAdditions[value];
     }
+}
+
+function isDescriptor(value) {
+    var result;
+    if(typeof value === 'object' && value) {
+        var len = Object.keys(value).length,
+            hasSetter = typeof value.set === 'function' && value.set.length === 1,
+            hasGetter = typeof value.get === 'function' && value.get.length === 0;
+
+        result = typeof value.configurable === 'boolean' ||
+            typeof value.enumerable === 'boolean' ||
+            len === 1 && (hasSetter || hasGetter) ||
+            len === 2 && hasSetter && hasGetter;
+    }
+    return result;
 }
 
 function Base() {}
@@ -125,8 +147,13 @@ extend.Base = Base;
  * @property {function} [initialize] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after similar function in all ancestors called with same signature.
  * @property {function} [initializeOwn] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after (all) the `initialize` function(s).
  * @property {object} [aliases] - Hash of aliases for prototype members in form `{ key: 'member', ... }` where `key` is the name of an alieas and `'member'` is the name of an existing member in the prototype. Each such key is added to the prototype as a reference to the named member. (The `aliases` object itself is *not* added to prototype.) Alternatively:
- * @property {string} [keys] - Arbitrary property names defined here with string values starting with a `#` character will alias the actual properties named in the strings (following the `#`). This is an alternative to providing an `aliases` hash, perhaps simpler (though subtler). (Use arbitrary identifiers here; don't use the name `keys`!)
- * @property {*} [arbitraryProperties] - Any additional arbitrary properties defined here will be added to the new constructor's prototype. (Use arbitrary identifiers here; don't use the name `aribitraryProperties`!)
+ * @property {string} [keys] - Arbitrary property names defined here with string values starting with a `#` character will alias the actual properties named in the strings (following the `#`). This is an alternative to providing an `aliases` hash, perhaps simpler (though subtler). (Use your own identifiers here; don't use the name `keys`!)
+ * @property {descriptorObject} [descriptors] - Will be run through `Object.defineProperty()`. Use your own identifiers here; don't use the name `descriptors`!)
+ * Detected by duck-typing:
+ * * It has a `configurable` property.
+ * * It has an `enumerable` property.
+ * * It has only: a `set` function that takes exactly one parameter and/or only a `get` function that takes no parameters.
+ * @property {*} [arbitraryProperties] - Any additional arbitrary properties defined here will be added to the new constructor's prototype. (Use your own identifiers here; don't use the name `aribitraryProperties`!)
  */
 
 /** @summary Call all `initialize` methods found in prototype chain.
