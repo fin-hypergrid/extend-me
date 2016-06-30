@@ -23,7 +23,7 @@
  *
  * This function (`extend()`) is added to the new extended object constructor as a property `.extend`, essentially making the object constructor itself easily "extendable." (Note: This is a property of each constructor and not a method of its prototype!)
  *
- * @param {string} [extendedClassName] - This is simply added to the prototype as $$CLASS_NAME. Useful for debugging because all derived constructors appear to have the same name ("Constructor") in the debugger. This property is ignored unless `extend.debug` is explicitly set to a truthy value.
+ * @param {string} [extendedClassName] - This is simply added to the prototype as $$CLASS_NAME. Useful for debugging because all derived constructors appear to have the same name ("Constructor") in the debugger.
  *
  * @param {extendedPrototypeAdditionsObject} [prototypeAdditions] - Object with members to copy to new constructor's prototype. Most members will be copied to the prototype. Some members, however, have special meanings as explained in the {@link extendedPrototypeAdditionsObject|type definition} (and may or may not be copied to the prototype).
  *
@@ -76,7 +76,7 @@ function extend(extendedClassName, prototypeAdditions) {
     var prototype = Constructor.prototype = Object.create(this.prototype);
     prototype.constructor = Constructor;
 
-    if (extendedClassName && extend.debug) {
+    if (extendedClassName) {
         prototype.$$CLASS_NAME = extendedClassName;
     }
 
