@@ -1,5 +1,7 @@
 'use strict';
 
+var overrider = require('overrider');
+
 /** @namespace extend-me **/
 
 /** @summary Extends an existing constructor into a new constructor.
@@ -25,7 +27,7 @@
  *
  * @param {string} [extendedClassName] - This is simply added to the prototype as $$CLASS_NAME. Useful for debugging because all derived constructors appear to have the same name ("Constructor") in the debugger.
  *
- * @param {extendedPrototypeAdditionsObject} [prototypeAdditions] - Object with members to copy to new constructor's prototype. Most members will be copied to the prototype. Some members, however, have special meanings as explained in the {@link extendedPrototypeAdditionsObject|type definition} (and may or may not be copied to the prototype).
+ * @param {extendedPrototypeAdditionsObject} [prototypeAdditions] - Object with members to copy to new constructor's prototype.
  *
  * @property {boolean} [debug] - See parameter `extendedClassName` _(above)_.
  *
@@ -46,6 +48,7 @@ function extend(extendedClassName, prototypeAdditions) {
                     break;
                 case 'string':
                     prototypeAdditions = {};
+                    break;
                 default:
                     throw 'Single-parameter overload must be either string or object.';
             }
@@ -80,52 +83,9 @@ function extend(extendedClassName, prototypeAdditions) {
         prototype.$$CLASS_NAME = extendedClassName;
     }
 
-    for (var key in prototypeAdditions) {
-        if (prototypeAdditions.hasOwnProperty(key)) {
-            var value = prototypeAdditions[key];
-            switch (key) {
-                case 'initializeOwn':
-                    // already called above; not needed in prototype
-                    break;
-                case 'aliases':
-                    for (var alias in value) {
-                        if (value.hasOwnProperty(alias)) {
-                            makeAlias(value[alias], alias);
-                        }
-                    }
-                    break;
-                default:
-                    if (typeof value === 'string' && value[0] === '#') {
-                        makeAlias(value, key.substr(1));
-                    } else if (isDescriptor(value)) {
-                        Object.defineProperty(prototype, key, value);
-                    } else {
-                        prototype[key] = value;
-                    }
-            }
-        }
-    }
+    overrider(prototype, prototypeAdditions);
 
     return Constructor;
-
-    function makeAlias(value, key) { // eslint-disable-line no-shadow
-        prototype[key] = prototypeAdditions[value];
-    }
-}
-
-function isDescriptor(value) {
-    var result;
-    if(typeof value === 'object' && value) {
-        var len = Object.keys(value).length,
-            hasSetter = typeof value.set === 'function' && value.set.length === 1,
-            hasGetter = typeof value.get === 'function' && value.get.length === 0;
-
-        result = typeof value.configurable === 'boolean' ||
-            typeof value.enumerable === 'boolean' ||
-            len === 1 && (hasSetter || hasGetter) ||
-            len === 2 && hasSetter && hasGetter;
-    }
-    return result;
 }
 
 function Base() {}
@@ -144,19 +104,13 @@ extend.Base = Base;
  */
 
 /** @typedef {object} extendedPrototypeAdditionsObject
+ * @desc All members are copied to the new object. The following have special meaning.
  * @property {function} [initialize] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after similar function in all ancestors called with same signature.
- * @property {function} [initializeOwn] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after (all) the `initialize` function(s).
- * @property {object} [aliases] - Hash of aliases for prototype members in form `{ key: 'member', ... }` where `key` is the name of an alieas and `'member'` is the name of an existing member in the prototype. Each such key is added to the prototype as a reference to the named member. (The `aliases` object itself is *not* added to prototype.) Alternatively:
- * @property {string} [keys] - Arbitrary property names defined here with string values starting with a `#` character will alias the actual properties named in the strings (following the `#`). This is an alternative to providing an `aliases` hash, perhaps simpler (though subtler). (Use your own identifiers here; don't use the name `keys`!)
- * @property {descriptorObject} [descriptors] - Will be run through `Object.defineProperty()`. Use your own identifiers here; don't use the name `descriptors`!)
- * Detected by duck-typing:
- * * It has a `configurable` property.
- * * It has an `enumerable` property.
- * * It has only: a `set` function that takes exactly one parameter and/or only a `get` function that takes no parameters.
- * @property {*} [arbitraryProperties] - Any additional arbitrary properties defined here will be added to the new constructor's prototype. (Use your own identifiers here; don't use the name `aribitraryProperties`!)
+ * @property {function} [preInitialize] - Called before the `initialize` cascade. Gets passed new object as context + same args as constructor itself.
+ * @property {function} [postInitialize] - Called after the `initialize` cascade. Gets passed new object as context + same args as constructor itself.
  */
 
-/** @summary Call all `initialize` methods found in prototype chain.
+/** @summary Call all `initialize` methods found in prototype chain, beginning with the most senior ancestor's first.
  * @desc This recursive routine is called by the constructor.
  * 1. Walks back the prototype chain to `Object`'s prototype
  * 2. Walks forward to new object, calling any `initialize` methods it finds along the way with the same context and arguments with which the constructor was called.

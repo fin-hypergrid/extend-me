@@ -6,7 +6,8 @@ var gulp        = require('gulp'),
 var runSequence = require('run-sequence'),
     browserSync = require('browser-sync').create(),
     exec        = require('child_process').exec,
-    path        = require('path');
+    path        = require('path'),
+    pipe        = require('multipipe');
 
 var name     = 'extend-me',
     srcDir   = './src/',
@@ -18,7 +19,7 @@ var name     = 'extend-me',
 gulp.task('lint', lint);
 gulp.task('test', test);
 gulp.task('doc', doc);
-gulp.task('enclose', enclose);
+gulp.task('browserify', browserify);
 gulp.task('serve', browserSyncLaunchServer);
 
 gulp.task('build', function(callback) {
@@ -27,7 +28,7 @@ gulp.task('build', function(callback) {
         'lint',
         'test',
         'doc',
-        'enclose',
+        'browserify',
         callback);
 });
 
@@ -65,7 +66,8 @@ function doc(cb) {
     });
 }
 
-function enclose() {
+function browserify() {
+    // browserify the root file src/index.js into build/filter-tree.js and filter-tree.min.js
     return gulp.src(srcDir + 'index.js')
         .pipe($$.replace(
             '\'use strict\';',
@@ -75,13 +77,20 @@ function enclose() {
             'module.exports = extend;',
             'return extend;\n\n})().Base;'
         ))
-
-        .pipe($$.rename(name + '.js'))
-        .pipe(gulp.dest(buildDir))
-
-        .pipe($$.uglify())
-        .pipe($$.rename(name + '.min.js'))
-        .pipe(gulp.dest(buildDir))
+        .pipe($$.mirror(
+            pipe(
+                $$.rename(name + '.js'),
+                $$.browserify({ debug: true })
+                    .on('error', $$.util.log)
+            ),
+            pipe(
+                $$.rename(name + '.min.js'),
+                $$.browserify(),
+                $$.uglify()
+                    .on('error', $$.util.log)
+            )
+        ))
+        .pipe(gulp.dest(buildDir));
 }
 
 function browserSyncLaunchServer() {
