@@ -1,6 +1,6 @@
 {
   "name": "extend-me",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "main": "index.js",
   "description": "Yet another Backbone-like class extender",
   "repository": {
@@ -13,7 +13,7 @@
   "author": "Jonathan Eiten",
   "license": "MIT",
   "dependencies": {
-    "overrider": "^0.1"
+    "overrider": "^0"
   },
   "devDependencies": {
     "browser-sync": "^2.10.0",
