@@ -10,7 +10,7 @@ var runSequence = require('run-sequence'),
     pipe        = require('multipipe');
 
 var name     = 'extend-me',
-    srcDir   = './src/',
+    srcDir   = './',
     testDir  = './test/',
     buildDir  = './build/';
 
@@ -37,7 +37,7 @@ gulp.task('reload', function() {
 });
 
 gulp.task('watch', function () {
-    gulp.watch([srcDir + '**', testDir + '**'], ['build']);
+    gulp.watch([srcDir + '*.js', testDir + '*.js'], ['build']);
     gulp.watch([buildDir + name + '.js'], ['reload']);
 });
 

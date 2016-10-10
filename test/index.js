@@ -4,11 +4,11 @@
 
 require('should'); // extends Object with `should`
 
-var cssInjector = require('../src/');
+var extendMe = require('../');
 
 describe('`extend` that', function() {
     it('is a function', function() {
-        cssInjector.should.be.a.Function();
+        extendMe.should.be.a.Function();
     });
     it('more tests needed');
 });
