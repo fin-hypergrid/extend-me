@@ -90,9 +90,48 @@ function extend(extendedClassName, prototypeAdditions) {
 
 function Base() {}
 Base.prototype = {
+
     constructor: Base.prototype.constructor,
+
+    /**
+     * Access a member of the super class.
+     * @returns {Object}
+     */
     get super() {
         return Object.getPrototypeOf(Object.getPrototypeOf(this));
+    },
+
+    /**
+     * Find member on prototype chain beginning with super class.
+     * @param {string} memberName
+     * @returns {undefined|*} `undefined` if not found; value otherwise.
+     */
+    superMember: function(memberName) {
+        var parent = this.super;
+        do { parent = Object.getPrototypeOf(parent); } while (!parent.hasOwnProperty(memberName));
+        return parent && parent[memberName];
+    },
+
+    /**
+     * Find method on prototype chain beginning with super class.
+     * @param {string} methodName
+     * @returns {function}
+     */
+    superMethod: function(methodName) {
+        var method = this.superMember(methodName);
+        if (typeof method !== 'function') {
+            throw new TypeError('this.' + methodName + ' is not a function');
+        }
+        return method;
+    },
+
+    /**
+     * Find method on prototype chain beginning with super class and call it with remaining args.
+     * @param {string} methodName
+     * @returns {*}
+     */
+    callSuperMethod: function(methodName) {
+        return this.superMethod(methodName).apply(this, Array.prototype.slice.call(arguments, 1));
     }
 };
 Base.extend = extend;
