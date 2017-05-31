@@ -63,14 +63,14 @@ function extend(extendedClassName, prototypeAdditions) {
     }
 
     function Constructor() {
-        if (prototypeAdditions.preInitialize) {
-            prototypeAdditions.preInitialize.apply(this, arguments);
+        if (this.preInitialize) {
+            this.preInitialize.apply(this, arguments);
         }
 
         initializePrototypeChain.apply(this, arguments);
 
-        if (prototypeAdditions.postInitialize) {
-            prototypeAdditions.postInitialize.apply(this, arguments);
+        if (this.postInitialize) {
+            this.postInitialize.apply(this, arguments);
         }
     }
 
@@ -145,8 +145,8 @@ extend.Base = Base;
 /** @typedef {object} extendedPrototypeAdditionsObject
  * @desc All members are copied to the new object. The following have special meaning.
  * @property {function} [initialize] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after similar function in all ancestors called with same signature.
- * @property {function} [preInitialize] - Called before the `initialize` cascade. Gets passed new object as context + same args as constructor itself.
- * @property {function} [postInitialize] - Called after the `initialize` cascade. Gets passed new object as context + same args as constructor itself.
+ * @property {function} [preInitialize] - Called before the `initialize` cascade. Gets passed new object as context + same args as constructor itself. If not defined here, the top-most (and only the top-most) definition found on the prototype chain is called.
+ * @property {function} [postInitialize] - Called after the `initialize` cascade. Gets passed new object as context + same args as constructor itself. If not defined here, the top-most (and only the top-most) definition found on the prototype chain is called.
  */
 
 /** @summary Call all `initialize` methods found in prototype chain, beginning with the most senior ancestor's first.

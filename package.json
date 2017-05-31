@@ -1,6 +1,6 @@
 {
   "name": "extend-me",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "main": "index.js",
   "description": "Yet another Backbone-like class extender",
   "repository": {

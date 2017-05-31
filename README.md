@@ -1,6 +1,15 @@
 # extend-me
 Yet another Backbone-like class extender
 
+### Update history
+
+#### v2.4.0
+Previously, on instantiation, the `preInitialize` and `postInitialize` methods were called if and only if they were defined on the subclass's (extended object's) own prototype. This has been changed so that the "top" such methods on the prototype chain are now called, whether defined on the extended class or on an ancestor class. As before, these methods are called before and after the `initialize` cascade, respectively. Unlike `initialize`, however, there is no cascade; only the top most method is ever called.
+
+This was an oversight and the workaround has been to forward the calls by redefining new methods with these names whose sole function was to forward the call to `this.super`. This change is backwards compatible with that workaround; it will simply call the forwarding method as before. However, it is now safe to remove the forwarding methods altogether and the call will be made for you.
+
+This can be considered a breaking change because previously without the workarounds, such ancestor methods were not executed. If you were dependent on this unlikely scenario, you can restore that behavior by defining new methods with these names as no-ops.
+
 ### Require/include
 
 Node.js / Browserify:
