@@ -1,8 +1,8 @@
 {
   "name": "extend-me",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "main": "index.js",
-  "description": "Yet another Backbone-like class extender",
+  "description": "A class extender",
   "repository": {
     "type": "git",
     "url": "https://github.com/joneit/extend-me"

@@ -6,7 +6,7 @@ var overrider = require('overrider');
 
 /** @summary Extends an existing constructor into a new constructor.
  *
- * @returns {ChildConstructor} A new constructor, extended from the given context, possibly with some prototype additions.
+ * @returns {Constructor} A new constructor, extended from the given context, possibly with some prototype additions.
  *
  * @desc Extends "objects" (constructors), with optional additional code, optional prototype additions, and optional prototype member aliases.
  *
@@ -62,6 +62,9 @@ function extend(extendedClassName, prototypeAdditions) {
             throw 'Too many parameters';
     }
 
+    /**
+     * @class
+     */
     function Constructor() {
         if (this.preInitialize) {
             this.preInitialize.apply(this, arguments);
@@ -74,12 +77,28 @@ function extend(extendedClassName, prototypeAdditions) {
         }
     }
 
+    /**
+     * @method
+     * @see {@link extend-me.extend}
+     * @desc Added to each returned extended class constructor.
+     */
+
     Constructor.extend = extend;
+
+
+    /**
+     * @method
+     * @param {string} [ancestorConstructorName] - If given, searches up the prototype chain for constructor with matching name.
+     * @returns {function|null} Constructor of parent class; or ancestor class with matching name; or null
+     */
+    Constructor.parent = parentConstructor;
 
     var prototype = Constructor.prototype = Object.create(this.prototype);
     prototype.constructor = Constructor;
 
+    extendedClassName = extendedClassName || prototype.$$CLASS_NAME || prototype.name;
     if (extendedClassName) {
+        Object.defineProperty(Constructor, 'name', { value: extendedClassName, configurable: true });
         prototype.$$CLASS_NAME = extendedClassName;
     }
 
@@ -170,6 +189,16 @@ function initializePrototypeChain() {
             }
         }
     }
+}
+
+function parentConstructor(ancestorConstructorName) {
+    var prototype = this.prototype;
+    if (prototype) {
+        do {
+            prototype = Object.getPrototypeOf(prototype);
+        } while (ancestorConstructorName && prototype && prototype.constructor.name !== ancestorConstructorName);
+    }
+    return prototype && prototype.constructor;
 }
 
 module.exports = extend;

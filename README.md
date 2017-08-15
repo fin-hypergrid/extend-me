@@ -1,7 +1,10 @@
-# extend-me
-Yet another Backbone-like class extender
+A class extender
 
 ### Update history
+
+#### v2.5.0
+* Added `parent(/*optional*/ancestorConstructorName)` to constructor to get the parent class's constructor or the named ancestor class's constructor.
+* Now resets returned constructor's `name` to `extendedClassName` OR `prototypeAdditions.$$CLASS_NAME` in the prototype OR `prototypeAdditions.name`
 
 #### v2.4.0
 Previously, on instantiation, the `preInitialize` and `postInitialize` methods were called if and only if they were defined on the subclass's (extended object's) own prototype. This has been changed so that the "top" such methods on the prototype chain are now called, whether defined on the extended class or on an ancestor class. As before, these methods are called before and after the `initialize` cascade, respectively. Unlike `initialize`, however, there is no cascade; only the top most method is ever called.
