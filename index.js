@@ -25,6 +25,8 @@ var overrider = require('overrider');
  *
  * This function (`extend()`) is added to the new extended object constructor as a property `.extend`, essentially making the object constructor itself easily "extendable." (Note: This is a property of each constructor and not a method of its prototype!)
  *
+ * @this Base class being extended from (i.e., its constructor function object).
+ *
  * @param {string} [extendedClassName] - This is simply added to the prototype as $$CLASS_NAME. Useful for debugging because all derived constructors appear to have the same name ("Constructor") in the debugger.
  *
  * @param {extendedPrototypeAdditionsObject} [prototypeAdditions] - Object with members to copy to new constructor's prototype.
@@ -104,6 +106,10 @@ function extend(extendedClassName, prototypeAdditions) {
 
     overrider(prototype, prototypeAdditions);
 
+    if (typeof this.postExtend === 'function') {
+        this.postExtend(prototype);
+    }
+
     return Constructor;
 }
 
@@ -155,6 +161,14 @@ Base.prototype = {
 };
 Base.extend = extend;
 extend.Base = Base;
+
+/**
+ * Optional static method is called with new "class" (constructor) after extending.
+ * This permits miscellaneous tweaking and cleanup of the new class.
+ * @method postExtend
+ * @param {object} prototype
+ * @memberOf Base
+ */
 
 /** @typedef {function} extendedConstructor
  * @property prototype.super - A reference to the prototype this constructor was extended from.

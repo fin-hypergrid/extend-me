@@ -18,7 +18,7 @@ var name     = 'extend-me',
 
 gulp.task('lint', lint);
 gulp.task('test', test);
-gulp.task('doc', doc);
+gulp.task('doc', doc); // needs: npm install -g jsdoc
 gulp.task('browserify', browserify);
 gulp.task('serve', browserSyncLaunchServer);
 
@@ -27,7 +27,7 @@ gulp.task('build', function(callback) {
     runSequence(
         'lint',
         'test',
-        'doc',
+        //'doc',
         'browserify',
         callback);
 });

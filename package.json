@@ -1,6 +1,6 @@
 {
   "name": "extend-me",
-  "version": "2.5.0",
+  "version": "2.6.0",
   "main": "index.js",
   "description": "A class extender",
   "repository": {
@@ -28,7 +28,6 @@
     "gulp-replace": "^0.5.4",
     "gulp-uglify": "^1.5.1",
     "gulp-util": "^3.0.7",
-    "jsdoc": "^3.3.3",
     "multipipe": "^0.2.1",
     "run-sequence": "^1.1.4",
     "should": "^7.1.1"
