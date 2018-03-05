@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Namespace: extend-me</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="extend-me.extend-Constructor.html">Constructor</a></li></ul><h3>Namespaces</h3><ul><li><a href="extend-me.html">extend-me</a></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+<div id="main">
+
+    <h1 class="page-title">Namespace: extend-me</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        extend-me
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".extend"><span class="type-signature">(static) </span>extend<span class="signature">(extendedClassName<span class="signature-attributes">opt</span>, prototypeAdditions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Constructor}</span></h4>
+
+    
+    <p class="summary"><p>Extends an existing constructor into a new constructor.</p></p>
+    
+
+
+
+<div class="description">
+    <p>Extends &quot;objects&quot; (constructors), with optional additional code, optional prototype additions, and optional prototype member aliases.</p>
+<blockquote>
+<p>CAVEAT: Not to be confused with Underscore-style .extend() which is something else entirely. I've used the name &quot;extend&quot; here because other packages (like Backbone.js) use it this way. You are free to call it whatever you want when you &quot;require&quot; it, such as <code>var inherits = require('extend')</code>.</p>
+</blockquote>
+<p>Provide a constructor as the context and any prototype additions you require in the first argument.</p>
+<p>For example, if you wish to be able to extend <code>BaseConstructor</code> to a new constructor with prototype overrides and/or additions, basic usage is:</p>
+<pre class="prettyprint source lang-javascript"><code>var Base = require('extend-me').Base;
+var BaseConstructor = Base.extend(basePrototype); // mixes in .extend
+var ChildConstructor = BaseConstructor.extend(childPrototypeOverridesAndAdditions);
+var GrandchildConstructor = ChildConstructor.extend(grandchildPrototypeOverridesAndAdditions);</code></pre><p>This function (<code>extend()</code>) is added to the new extended object constructor as a property <code>.extend</code>, essentially making the object constructor itself easily &quot;extendable.&quot; (Note: This is a property of each constructor and not a method of its prototype!)</p>
+</div>
+
+
+
+
+
+
+
+    <h5>This:</h5>
+    <ul><li><a href="Base.html">Base</a></li></ul>
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>extendedClassName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>This is simply added to the prototype as $$CLASS_NAME. Useful for debugging because all derived constructors appear to have the same name (&quot;Constructor&quot;) in the debugger.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prototypeAdditions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#extendedPrototypeAdditionsObject">extendedPrototypeAdditionsObject</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>Object with members to copy to new constructor's prototype.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>debug</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>See parameter <code>extendedClassName</code> <em>(above)</em>.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>Base</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>A convenient base class from which all other classes can be extended.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A new constructor, extended from the given context, possibly with some prototype additions.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Constructor</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    © 2018 <a href="http://www.openfin.co" target="_blank">OpenFin</a> All Rights Reserved.
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
