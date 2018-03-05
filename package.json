@@ -1,6 +1,6 @@
 {
   "name": "extend-me",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "main": "index.js",
   "description": "A class extender",
   "repository": {
@@ -12,9 +12,6 @@
   },
   "author": "Jonathan Eiten",
   "license": "MIT",
-  "dependencies": {
-    "overrider": "^0"
-  },
   "devDependencies": {
     "browser-sync": "^2.10.0",
     "gulp": "^3.9.0",

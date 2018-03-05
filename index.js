@@ -1,7 +1,5 @@
 'use strict';
 
-var overrider = require('overrider');
-
 /** @namespace extend-me **/
 
 /** @summary Extends an existing constructor into a new constructor.
@@ -84,9 +82,9 @@ function extend(extendedClassName, prototypeAdditions) {
      * @see {@link extend-me.extend}
      * @desc Added to each returned extended class constructor.
      */
-
     Constructor.extend = extend;
 
+    Constructor.getClassName = getClassName;
 
     /**
      * @method
@@ -104,7 +102,13 @@ function extend(extendedClassName, prototypeAdditions) {
         prototype.$$CLASS_NAME = extendedClassName;
     }
 
-    overrider(prototype, prototypeAdditions);
+    // define each prototype addition on the prototype (including getter/setters)
+    var key, descriptor;
+    for (key in prototypeAdditions) {
+        if ((descriptor = Object.getOwnPropertyDescriptor(prototypeAdditions, key))) {
+            Object.defineProperty(prototype, key, descriptor);
+        }
+    }
 
     if (typeof this.postExtend === 'function') {
         this.postExtend(prototype);
@@ -117,6 +121,14 @@ function Base() {}
 Base.prototype = {
 
     constructor: Base.prototype.constructor,
+
+    getClassName: function() {
+        return (
+            this.$$CLASS_NAME ||
+            this.name ||
+            this.constructor.name // try Function.prototype.name as last resort
+        );
+    },
 
     /**
      * Access a member of the super class.
@@ -203,6 +215,14 @@ function initializePrototypeChain() {
             }
         }
     }
+}
+
+function getClassName() {
+    return (
+        this.prototype.$$CLASS_NAME ||
+        this.prototype.name ||
+        this.name // try Function.prototype.name as last resort
+    );
 }
 
 function parentConstructor(ancestorConstructorName) {
