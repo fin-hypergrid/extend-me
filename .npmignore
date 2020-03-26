@@ -1,7 +1,4 @@
 /build
 /doc
-/jsdoc-template
-/test
 .*
 *.sh
-/gulpfile.js

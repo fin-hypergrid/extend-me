@@ -2,36 +2,33 @@
 
 /** @namespace extend-me **/
 
-/** @summary Extends an existing constructor into a new constructor.
+/** @summary Extends an existing "class" (constructor function) into a new "subclass.
  *
- * @returns {Constructor} A new constructor, extended from the given context, possibly with some prototype additions.
+ * @returns {function} A new class (constructor function), extended from the class provided in the execution context, possibly with some prototype additions.
  *
- * @desc Extends "objects" (constructors), with optional additional code, optional prototype additions, and optional prototype member aliases.
+ * @desc Extends a class creating a subclass with optional prototype additions.
  *
  * > CAVEAT: Not to be confused with Underscore-style .extend() which is something else entirely. I've used the name "extend" here because other packages (like Backbone.js) use it this way. You are free to call it whatever you want when you "require" it, such as `var inherits = require('extend')`.
  *
- * Provide a constructor as the context and any prototype additions you require in the first argument.
+ * Provide any prototype additions you require in the first argument, including optional constructor code in a method called `initialize`.
  *
- * For example, if you wish to be able to extend `BaseConstructor` to a new constructor with prototype overrides and/or additions, basic usage is:
+ * For example, if you wish to be able to extend your class `MyBase` to a new "class" (i.e., constructor function) with prototype overrides and/or additions, basic usage is:
  *
  * ```javascript
- * var Base = require('extend-me').Base;
- * var BaseConstructor = Base.extend(basePrototype); // mixes in .extend
- * var ChildConstructor = BaseConstructor.extend(childPrototypeOverridesAndAdditions);
- * var GrandchildConstructor = ChildConstructor.extend(grandchildPrototypeOverridesAndAdditions);
+ * function MyBase() { ... }
+ * MyBase.prototype = { ... };
+ * MyBase.extend = extend; // mix in .extend
+ * var MyChild = MyBase.extend(childPrototypeOverridesAndAdditions);
+ * var MyGrandchild = MyChild.extend(grandchildPrototypeOverridesAndAdditions);
  * ```
  *
- * This function (`extend()`) is added to the new extended object constructor as a property `.extend`, essentially making the object constructor itself easily "extendable." (Note: This is a property of each constructor and not a method of its prototype!)
+ * This `extend` function is automatically added to the new extended class (constructor function) as a static property so it will itself be "extendable."
  *
- * @this Base class being extended from (i.e., its constructor function object).
+ * @this Function - The base class (constructor function) being extended from.
  *
- * @param {string} [extendedClassName] - This is simply added to the prototype as $$CLASS_NAME. Useful for debugging because all derived constructors appear to have the same name ("Constructor") in the debugger.
+ * @param {string} [extendedClassName=prototypeAdditions.$$CLASS_NAME || prototypeAdditions.name] - If defined, added to the constructor as static `name` property; and to the prototype as `$$CLASS_NAME`. Useful for debugging because all derived constructors appear to have the same name (`Constructor`) in the debugger. (If omitted, 2nd parameter is promoted to first position.)
  *
- * @param {extendedPrototypeAdditionsObject} [prototypeAdditions] - Object with members to copy to new constructor's prototype.
- *
- * @property {boolean} [debug] - See parameter `extendedClassName` _(above)_.
- *
- * @property {object} Base - A convenient base class from which all other classes can be extended.
+ * @param {prototypeAdditionsObject} [prototypeAdditions] - Object with members to define in the new constructor's prototype.
  *
  * @memberOf extend-me
  */
@@ -187,7 +184,7 @@ extend.Base = Base;
  * @property [extend] - If `prototypeAdditions.extendable` was truthy, this will be a reference to {@link extend.extend|extend}.
  */
 
-/** @typedef {object} extendedPrototypeAdditionsObject
+/** @typedef {object} prototypeAdditionsObject
  * @desc All members are copied to the new object. The following have special meaning.
  * @property {function} [initialize] - Additional constructor code for new object. This method is added to the new constructor's prototype. Gets passed new object as context + same args as constructor itself. Called on instantiation after similar function in all ancestors called with same signature.
  * @property {function} [preInitialize] - Called before the `initialize` cascade. Gets passed new object as context + same args as constructor itself. If not defined here, the top-most (and only the top-most) definition found on the prototype chain is called.

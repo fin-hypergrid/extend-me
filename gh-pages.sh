@@ -5,9 +5,6 @@ module="extend-me"
 # set variable repo to current directory name (without path)
 repo=${PWD##*/}
 
-# make sure the docs are built
-gulp doc >/dev/null
-
 # remove temp directory in case it already exists, remake it, switch to it
 rm -rf ../temp >/dev/null
 mkdir ../temp
@@ -22,9 +19,6 @@ git checkout -q --orphan gh-pages
 
 # remove all content from this new branch
 git rm -rf -q .
-
-# copy the doc directory from the workspace
-cp -R ../../$repo/doc/* . >/dev/null
 
 # copy repo/build to the cdn directory
 cp ../../$repo/build/* . >/dev/null

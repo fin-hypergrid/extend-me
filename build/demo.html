@@ -34,7 +34,7 @@
 
             for (var x = -3; x <= 3; x += 0.5) {
                 var item = document.createElement('li');
-                item.innerHTML = '<i>f</i>(' + x + ') = ' + parabola.calculate(x);
+                item.innerHTML = '<i>f</i>(' + x + ') = ' + parabola.calculate(x) + ' // ' + (3 * Math.pow(x, 2) + 2 * x + 1);
                 list.appendChild(item);
             }
 

@@ -17,7 +17,6 @@
         }
     },
     "opts": {
-        "template": "jsdoc-template",
         "recurse": true,
         "verbose": true,
         "destination": "./doc/",

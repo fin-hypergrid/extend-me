@@ -2,9 +2,15 @@
 
 A class extender
 
+> Update: This module is essentially obsoleted by ES6 [class](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/class) syntax, which is recommended going forward when possible (when your target browsers support it or your code is transpiled for unsupported browsers).
+
 ## Require/include
 
 Node.js / Browserify:
+
+```bash
+npm install --save extend-me
+```
 
 ```javascript
 var extend = require('extend-me');
@@ -13,12 +19,14 @@ var extend = require('extend-me');
 Browsers:
 
 ```html
-<script src="http://joneit.github.io/extend-me/extend-me.js"></script>
+<script src="http://fin-hypergrid.github.io/extend-me/extend-me.js"></script>
 ```
 or:
 ```html
-<script src="http://joneit.github.io/extend-me/extend-me.min.js"></script>
+<script src="http://fin-hypergrid.github.io/extend-me/extend-me.min.js"></script>
 ```
+
+> Do not confuse this `extend` function with Underscore-style .extend() which is something else entirely. I've used the name "extend" here because other packages (like Backbone.js) use it this way. You are free to call it whatever you want when you "require" it, such as `var inherits = require('extend')`.
 
 ## Syntax
 
@@ -106,15 +114,15 @@ classes that implement it, starting with the most distant ancestor all the way u
 and including the derived class in question. Each `initialize` method is called
 with the same parameters as passed to the constructor.
 
-In the example above, on instantiation (`var paraboloa = new ParabolaWithIntercept(3, 2, 1)`),
+In the example above, on instantiation (`var parabola = new ParabolaWithIntercept(3, 2, 1)`),
 `Parabola.prototype.initialize` is called first; then `ParabolaWithIntercept.prototype.initialize`.
 
 To add initialization code to be executed _before_ and/or _after_ this chain of `initialize`
-calls, you an define methods `preInitialize` and/or `postInitialize`, respectively. These are _not_
+calls, you can define methods `preInitialize` and/or `postInitialize`, respectively. These are _not_
 part of the initialization chain. They are only called on the object being instantiated;
 they are not called when a derived class is being instantiated.
 For example, in the sample usage above, if `MyClass` had had a `preInitialize` method,
-it would be called on `a`'s intantiation but not `b`'s.
+it would be called on `a`'s instantiation but not `b`'s.
 
 ## `Base`
 
@@ -125,11 +133,14 @@ Use of `Base` is not required, however, as you can also create your own base cla
 ```js
 function MyBase() {}
 MyBase.extend = extend;
+```
 
 The following methods are available in the prototype of `extend.Base`. 
 
 ### `super`
 Reference to the immediate ancestor in the prototype chain. Implemented as a getter on the `Base`'s prototype. See example above.
+
+> NOTE: `super` is not a reference to ancestral constructor; ancestral constructors are always called automatically, as described above.
 
 ### `superMember(memberName)`
 Find member on prototype chain beginning with super class.
@@ -140,15 +151,23 @@ Find method on prototype chain beginning with super class.
 ### `callSuperMethod(methodName, arg1, arg2, arg3, ...)`
 Find method on prototype chain beginning with super class and call it with remaining args.
 
-## API documentation
-
-Detailed API docs can be found [here](http://joneit.github.io/extend-me/extend-me.html).
-
 ## Demo
 
-A demo can be found [here](http://joneit.github.io/extend-me/demo.html).
+A demo/test using the `ParabolaWithIntercept` class described above can be found on [github.io](http://fin-hypergrid.github.io/extend-me).
 
 ## Update history
+
+### v2.7.1
+* Simplified repo as it no longer has any dependencies (since 2.7.0)
+* Removed gulpfile.js and its dependencies
+* Added build.sh
+* Removed vapid test
+* Removed custom jsdoc template
+* Moved to new home in the fin-hypergrid Github organization
+
+### v2.7.0
+* Added `getClassName` as both static method to extended class and as prototype method to `Base`.
+* Removed `overrider` dependency.
 
 ### v2.6.0
 * Added `postExtend`, an optional static method of the base "class" (constructor). When defined, it is called at the end of `extend()` with the new "class" (new constructor) as its sole parameter. This permits miscellaneous tweaking and cleanup of the new class.
@@ -164,8 +183,3 @@ This was an oversight and the workaround has been to forward the calls by redefi
 
 This can be considered a breaking change because previously without the workarounds, such ancestor methods were not executed. If you were dependent on this unlikely scenario, you can restore that behavior by defining new methods with these names as no-ops.
 
-
-## Submodules
-
-See the note [Regarding submodules](https://github.com/openfin/rectangular#regarding-submodules)
-for important information on cloning this repo or re-purposing its build template.
